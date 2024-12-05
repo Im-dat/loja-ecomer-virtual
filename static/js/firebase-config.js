@@ -11,12 +11,12 @@ import { getFirestore, doc, getDoc, setDoc } from "https://www.gstatic.com/fireb
 
 // Firebase configuration
 const firebaseConfig = {
-    apiKey: "AIzaSyBQJ0BtDVdb9wZ0h0Inbhc7LQsjYniDPQc",
-    authDomain: "blog-de-noticia.firebaseapp.com",
-    projectId: "blog-de-noticia",
-    storageBucket: "blog-de-noticia.appspot.com",
-    messagingSenderId: "1042727924607",
-    appId: "1:1042727924607:web:bd78aa6cee74d8722a604a"
+    apiKey: "",
+    authDomain: "",
+    projectId: "",
+    storageBucket: "",
+    messagingSenderId: "",
+    appId: ""
 };
 
 // Initialize Firebase
