@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Meu Perfil - MoveisEletro</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="static/css/style.css">
+</head>
+<body>
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark sticky-top">
+        <div class="container">
+            <a class="navbar-brand" href="index.html">MoveisEletro</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav me-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="index.html">Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="index.html#moveis">Móveis</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="index.html#eletro">Eletrônicos</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="sobre.html">Sobre</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="contato.html">Contato</a>
+                    </li>
+                </ul>
+                <div class="logged-in" style="display: none;">
+                    <div class="dropdown">
+                        <button class="btn btn-primary dropdown-toggle" type="button" id="userDropdown" data-bs-toggle="dropdown">
+                            <i class="bi bi-person-circle"></i>
+                            <span id="userEmail"></span>
+                        </button>
+                        <ul class="dropdown-menu dropdown-menu-end">
+                            <li><a class="dropdown-item" href="profile.html"><i class="bi bi-person"></i> Minha Conta</a></li>
+                            <li><a class="dropdown-item" href="#"><i class="bi bi-box"></i> Meus Pedidos</a></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li><a class="dropdown-item text-danger" href="#" onclick="signOut()"><i class="bi bi-box-arrow-right"></i> Sair</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="container py-5">
+        <div class="row">
+            <div class="col-md-4">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="text-center mb-4">
+                            <i class="bi bi-person-circle display-1"></i>
+                            <h4 class="mt-2" id="userFullName">Carregando...</h4>
+                            <p class="text-muted" id="userEmailProfile">carregando@email.com</p>
+                        </div>
+                        <div class="list-group">
+                            <a href="#" class="list-group-item list-group-item-action active" data-bs-toggle="list" href="#profile">
+                                <i class="bi bi-person me-2"></i>Perfil
+                            </a>
+                            <a href="#" class="list-group-item list-group-item-action" data-bs-toggle="list" href="#orders">
+                                <i class="bi bi-box me-2"></i>Pedidos
+                            </a>
+                            <a href="#" class="list-group-item list-group-item-action" data-bs-toggle="list" href="#addresses">
+                                <i class="bi bi-geo-alt me-2"></i>Endereços
+                            </a>
+                            <a href="#" class="list-group-item list-group-item-action" data-bs-toggle="list" href="#security">
+                                <i class="bi bi-shield-lock me-2"></i>Segurança
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-8">
+                <div class="tab-content">
+                    <div class="tab-pane fade show active" id="profile">
+                        <div class="card">
+                            <div class="card-body">
+                                <h5 class="card-title">Editar Perfil</h5>
+                                <form id="profileForm">
+                                    <div class="row mb-3">
+                                        <div class="col-md-6">
+                                            <label for="firstName" class="form-label">Nome</label>
+                                            <input type="text" class="form-control" id="firstName" required>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <label for="lastName" class="form-label">Sobrenome</label>
+                                            <input type="text" class="form-control" id="lastName" required>
+                                        </div>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="email" class="form-label">Email</label>
+                                        <input type="email" class="form-control" id="email" readonly>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="phone" class="form-label">Telefone</label>
+                                        <input type="tel" class="form-control" id="phone" required>
+                                    </div>
+                                    <div class="alert alert-success d-none" id="successMessage">
+                                        Perfil atualizado com sucesso!
+                                    </div>
+                                    <div class="alert alert-danger d-none" id="errorMessage">
+                                        Erro ao atualizar perfil.
+                                    </div>
+                                    <button type="submit" class="btn btn-primary">Salvar Alterações</button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="tab-pane fade" id="orders">
+                        <div class="card">
+                            <div class="card-body">
+                                <h5 class="card-title">Meus Pedidos</h5>
+                                <p class="text-muted">Você ainda não tem pedidos.</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="tab-pane fade" id="addresses">
+                        <div class="card">
+                            <div class="card-body">
+                                <h5 class="card-title">Meus Endereços</h5>
+                                <p class="text-muted">Nenhum endereço cadastrado.</p>
+                                <button class="btn btn-primary" disabled>Adicionar Endereço</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="tab-pane fade" id="security">
+                        <div class="card">
+                            <div class="card-body">
+                                <h5 class="card-title">Segurança</h5>
+                                <form id="passwordForm">
+                                    <div class="mb-3">
+                                        <label for="currentPassword" class="form-label">Senha Atual</label>
+                                        <input type="password" class="form-control" id="currentPassword" required>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="newPassword" class="form-label">Nova Senha</label>
+                                        <input type="password" class="form-control" id="newPassword" required>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="confirmNewPassword" class="form-label">Confirmar Nova Senha</label>
+                                        <input type="password" class="form-control" id="confirmNewPassword" required>
+                                    </div>
+                                    <button type="submit" class="btn btn-primary" disabled>Alterar Senha</button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-dark text-light py-4">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-4 mb-3">
+                    <h5>MoveisEletro</h5>
+                    <p>Sua loja online de móveis e eletrônicos.</p>
+                </div>
+                <div class="col-md-4 mb-3">
+                    <h5>Links Úteis</h5>
+                    <ul class="list-unstyled">
+                        <li><a href="#" class="text-light text-decoration-none">Sobre Nós</a></li>
+                        <li><a href="#" class="text-light text-decoration-none">Política de Privacidade</a></li>
+                        <li><a href="#" class="text-light text-decoration-none">Termos de Uso</a></li>
+                    </ul>
+                </div>
+                <div class="col-md-4 mb-3">
+                    <h5>Newsletter</h5>
+                    <p>Receba ofertas exclusivas e novidades!</p>
+                    <form class="d-flex">
+                        <input type="email" class="form-control me-2" placeholder="Seu e-mail">
+                        <button class="btn btn-primary" type="submit">Inscrever</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+    <!-- Custom JS -->
+    <script type="module" src="static/js/firebase-config.js"></script>
+    <script type="module" src="static/js/auth.js"></script>
+    <script type="module" src="static/js/profile.js"></script>
+</body>
+</html>
