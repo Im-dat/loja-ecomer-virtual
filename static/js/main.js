@@ -83,10 +83,14 @@ function renderizarProdutos() {
 // Função para adicionar produto ao carrinho
 function adicionarAoCarrinho(produtoId) {
     const produto = [...produtos.moveis, ...produtos.eletro].find(p => p.id === produtoId);
-    if (produto && typeof cart !== 'undefined') {
-        cart.addItem(produto);
+    if (produto) {
+        if (typeof cart !== 'undefined') {
+            cart.addItem(produto);
+        } else {
+            alert('Produto adicionado ao carrinho!');
+        }
     } else {
-        alert('Produto adicionado ao carrinho!');
+        alert('Produto não encontrado.');
     }
 }
 

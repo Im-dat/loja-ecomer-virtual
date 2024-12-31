@@ -34,20 +34,13 @@ onAuthStateChanged(window.auth, async (user) => {
     if (user) {
         // User is signed in
         try {
-            // Get user data from Firestore
             const userDoc = await getDoc(doc(window.db, 'users', user.uid));
             const userData = userDoc.data();
 
-            // Show logged in elements and hide logged out elements
             loggedInElements.forEach(elem => elem.style.display = 'block');
             loggedOutElements.forEach(elem => elem.style.display = 'none');
 
-            // Display user name if available, otherwise display email
-            if (userData && userData.firstName) {
-                userEmailElement.textContent = `${userData.firstName}`;
-            } else {
-                userEmailElement.textContent = user.email;
-            }
+            userEmailElement.textContent = userData && userData.firstName ? userData.firstName : user.email;
         } catch (error) {
             console.error('Error fetching user data:', error);
             userEmailElement.textContent = user.email;
@@ -68,69 +61,24 @@ document.addEventListener('DOMContentLoaded', () => {
             e.preventDefault();
             
             try {
-                // Get form fields
-                const firstName = document.getElementById('firstName').value.trim();
-                const lastName = document.getElementById('lastName').value.trim();
-                const email = document.getElementById('email').value.trim();
-                const password = document.getElementById('password').value;
-                const confirmPassword = document.getElementById('confirmPassword').value;
-                const phone = document.getElementById('phone').value.trim();
-                const terms = document.getElementById('terms').checked;
+                const formData = getFormData(['firstName', 'lastName', 'email', 'password', 'confirmPassword', 'phone', 'terms']);
                 
-                // Validate form
-                if (!firstName || !lastName || !email || !password || !confirmPassword || !phone) {
-                    showError('Por favor, preencha todos os campos.');
-                    return;
-                }
-                
-                if (password !== confirmPassword) {
-                    showError('As senhas não coincidem.');
-                    return;
-                }
-                
-                if (password.length < 6) {
-                    showError('A senha deve ter pelo menos 6 caracteres.');
-                    return;
-                }
+                if (!validateRegistrationForm(formData)) return;
 
-                if (!terms) {
-                    showError('Você deve aceitar os termos de uso.');
-                    return;
-                }
-
-                // Create user account
-                const userCredential = await createUserWithEmailAndPassword(window.auth, email, password);
+                const userCredential = await createUserWithEmailAndPassword(window.auth, formData.email, formData.password);
                 const user = userCredential.user;
 
-                // Create user profile in Firestore
                 await setDoc(doc(window.db, 'users', user.uid), {
-                    firstName,
-                    lastName,
-                    email,
-                    phone,
+                    firstName: formData.firstName,
+                    lastName: formData.lastName,
+                    email: formData.email,
+                    phone: formData.phone,
                     createdAt: new Date().toISOString()
                 });
 
-                // Redirect to home page
                 window.location.href = 'index.html';
             } catch (error) {
-                console.error('Error:', error);
-                switch (error.code) {
-                    case 'auth/email-already-in-use':
-                        showError('Este email já está cadastrado.');
-                        break;
-                    case 'auth/invalid-email':
-                        showError('Email inválido.');
-                        break;
-                    case 'auth/operation-not-allowed':
-                        showError('Operação não permitida.');
-                        break;
-                    case 'auth/weak-password':
-                        showError('Senha muito fraca.');
-                        break;
-                    default:
-                        showError('Erro ao criar conta. Por favor, tente novamente.');
-                }
+                handleAuthError(error);
             }
         });
     }
@@ -142,37 +90,15 @@ document.addEventListener('DOMContentLoaded', () => {
             e.preventDefault();
             
             try {
-                const email = document.getElementById('email').value.trim();
-                const password = document.getElementById('password').value;
+                const formData = getFormData(['email', 'password']);
                 
-                if (!email || !password) {
-                    showError('Por favor, preencha todos os campos.');
-                    return;
-                }
+                if (!validateLoginForm(formData)) return;
 
-                // Sign in user
-                await signInWithEmailAndPassword(window.auth, email, password);
+                await signInWithEmailAndPassword(window.auth, formData.email, formData.password);
                 
-                // Redirect to home page
                 window.location.href = 'index.html';
             } catch (error) {
-                console.error('Error:', error);
-                switch (error.code) {
-                    case 'auth/invalid-email':
-                        showError('Email inválido.');
-                        break;
-                    case 'auth/user-disabled':
-                        showError('Esta conta foi desativada.');
-                        break;
-                    case 'auth/user-not-found':
-                        showError('Usuário não encontrado.');
-                        break;
-                    case 'auth/wrong-password':
-                        showError('Senha incorreta.');
-                        break;
-                    default:
-                        showError('Erro ao fazer login. Por favor, tente novamente.');
-                }
+                handleAuthError(error);
             }
         });
     }
@@ -186,7 +112,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 const result = await signInWithPopup(window.auth, provider);
                 const user = result.user;
 
-                // Create/update user profile in Firestore
                 await setDoc(doc(window.db, 'users', user.uid), {
                     firstName: user.displayName?.split(' ')[0] || '',
                     lastName: user.displayName?.split(' ').slice(1).join(' ') || '',
@@ -195,15 +120,83 @@ document.addEventListener('DOMContentLoaded', () => {
                     lastLogin: new Date().toISOString()
                 }, { merge: true });
 
-                // Redirect to home page
                 window.location.href = 'index.html';
             } catch (error) {
-                console.error('Error:', error);
                 showError('Erro ao entrar com Google. Por favor, tente novamente.');
             }
         });
     }
 });
+
+function getFormData(fields) {
+    const formData = {};
+    fields.forEach(field => {
+        const element = document.getElementById(field);
+        formData[field] = element.type === 'checkbox' ? element.checked : element.value.trim();
+    });
+    return formData;
+}
+
+function validateRegistrationForm(formData) {
+    if (!formData.firstName || !formData.lastName || !formData.email || !formData.password || !formData.confirmPassword || !formData.phone) {
+        showError('Por favor, preencha todos os campos.');
+        return false;
+    }
+    
+    if (formData.password !== formData.confirmPassword) {
+        showError('As senhas não coincidem.');
+        return false;
+    }
+    
+    if (formData.password.length < 6) {
+        showError('A senha deve ter pelo menos 6 caracteres.');
+        return false;
+    }
+
+    if (!formData.terms) {
+        showError('Você deve aceitar os termos de uso.');
+        return false;
+    }
+
+    return true;
+}
+
+function validateLoginForm(formData) {
+    if (!formData.email || !formData.password) {
+        showError('Por favor, preencha todos os campos.');
+        return false;
+    }
+    return true;
+}
+
+function handleAuthError(error) {
+    console.error('Error:', error);
+    switch (error.code) {
+        case 'auth/email-already-in-use':
+            showError('Este email já está cadastrado.');
+            break;
+        case 'auth/invalid-email':
+            showError('Email inválido.');
+            break;
+        case 'auth/operation-not-allowed':
+            showError('Operação não permitida.');
+            break;
+        case 'auth/weak-password':
+            showError('Senha muito fraca.');
+            break;
+        case 'auth/user-disabled':
+            showError('Esta conta foi desativada.');
+            break;
+        case 'auth/user-not-found':
+            showError('Usuário não encontrado.');
+            break;
+        case 'auth/wrong-password':
+            showError('Senha incorreta.');
+            break;
+        default:
+            showError('Erro ao criar conta. Por favor, tente novamente.');
+    }
+}
 
 export async function signOut() {
     try {

@@ -12,7 +12,6 @@ class Cart {
             checkoutButton.addEventListener('click', () => this.checkout());
         }
 
-        // Update cart when modal is shown
         const cartModal = document.getElementById('cartModal');
         if (cartModal) {
             cartModal.addEventListener('show.bs.modal', () => this.updateCartModal());
@@ -143,9 +142,7 @@ class Cart {
             return;
         }
         
-        // Here you would typically redirect to a checkout page
         alert('Redirecionando para o checkout...');
-        // window.location.href = '/checkout';
     }
 }
 

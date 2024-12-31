@@ -1,28 +1,26 @@
 import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.2/firebase-auth.js";
 import { doc, getDoc, updateDoc } from "https://www.gstatic.com/firebasejs/10.7.2/firebase-firestore.js";
 
-// Helper function to show success message
-function showSuccess(message) {
-    const successMessage = document.getElementById('successMessage');
-    if (successMessage) {
-        successMessage.textContent = message;
-        successMessage.classList.remove('d-none');
+// Helper function to show messages
+function showMessage(elementId, message) {
+    const messageElement = document.getElementById(elementId);
+    if (messageElement) {
+        messageElement.textContent = message;
+        messageElement.classList.remove('d-none');
         setTimeout(() => {
-            successMessage.classList.add('d-none');
+            messageElement.classList.add('d-none');
         }, 5000);
     }
 }
 
-// Helper function to show error message
+// Show success message
+function showSuccess(message) {
+    showMessage('successMessage', message);
+}
+
+// Show error message
 function showError(message) {
-    const errorMessage = document.getElementById('errorMessage');
-    if (errorMessage) {
-        errorMessage.textContent = message;
-        errorMessage.classList.remove('d-none');
-        setTimeout(() => {
-            errorMessage.classList.add('d-none');
-        }, 5000);
-    }
+    showMessage('errorMessage', message);
 }
 
 // Load user profile data

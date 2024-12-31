@@ -133,6 +133,11 @@ body {
     border-color: #0056b3;
 }
 
+/* Back to Home Button */
+.back-to-home-btn {
+    margin-top: 20px;
+}
+
 /* Footer */
 footer {
     margin-top: 50px;
